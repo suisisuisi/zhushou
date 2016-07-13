@@ -1,0 +1,19 @@
+<component name="libraryTable">
+  <library name="GOPATH &lt;upclient1.0&gt;">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/../../go/src/groupcache" />
+      <root url="file://$PROJECT_DIR$/../../go/src/github.com" />
+      <root url="file://$PROJECT_DIR$/../../go/src/golang.org" />
+      <root url="file://$PROJECT_DIR$/../../go/src/inflect" />
+      <root url="file://$PROJECT_DIR$/../../go/src/niubee" />
+      <root url="file://$PROJECT_DIR$/../../go/src/negroni" />
+      <root url="file://$PROJECT_DIR$/../../go/src/bitbucket.org" />
+      <root url="file://$PROJECT_DIR$/../../go/src/gopkg.in" />
+      <root url="file://$PROJECT_DIR$/../../go/src/code.google.com" />
+    </CLASSES>
+    <SOURCES />
+    <excluded>
+      <root url="file://$PROJECT_DIR$" />
+    </excluded>
+  </library>
+</component>
