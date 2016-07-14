@@ -1,0 +1,15 @@
+<component name="libraryTable">
+  <library name="GOPATH &lt;zhushou&gt;">
+    <CLASSES>
+      <root url="file://C:/GOPATH/src/gopkg.in" />
+      <root url="file://C:/GOPATH/src/code.google.com" />
+      <root url="file://C:/GOPATH/src/github.com" />
+      <root url="file://C:/GOPATH/src/golang" />
+      <root url="file://C:/GOPATH/src/golang.org" />
+    </CLASSES>
+    <SOURCES />
+    <excluded>
+      <root url="file://$PROJECT_DIR$" />
+    </excluded>
+  </library>
+</component>

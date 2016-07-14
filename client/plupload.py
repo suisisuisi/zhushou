@@ -8,7 +8,6 @@ import struct
 from crypt import crypt
 from sck import sck
 
-
 class WFile:
     size = 0
     path = ''
@@ -89,15 +88,15 @@ class plupload:
                     fhead += "authorizeToken:" + wfile.hash + ";"
                     fhead += "name:"+wfile.name+";"
 
-                    print (fhead)
+                    fhead = fhead.encode(encoding="utf-8")
 
-                    fh = struct.pack('10s300s1I',
+                    data = struct.pack('10s300s1I',
                                         b'redocn',
                                         fhead,
                                         sendBufferLen)
                     print (fh)
 
-                    self.sck.send(fh)
+                    self.sck.send(data)
 
             wfile.state = WFile.DONE
             print('文件传输完毕')
