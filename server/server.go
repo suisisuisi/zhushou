@@ -6,6 +6,7 @@ import (
 	"os"
 	"bytes"
 	"encoding/binary"
+	//"log"
 )
 
 func main() {
@@ -26,59 +27,78 @@ func main() {
 	}
 }
 
+func Log(v ...interface{}) {
+    fmt.Println(v...)
+}
+
+const(
+	ConstHeader  = "www.redocn.com"
+	ConstHeaderLength = 14
+	ConstDescLength = 300
+	ConstSaveDataLength = 4
+)
 
 func Unpack(buffer []byte) []byte {
 	length :=uint32(len(buffer))
 	var i uint32
 	for i=0;i<length;i++{
-		if length< 318{
-			break
-		}
-		acceptDataHead :=buffer[i:i+14]
-		if(string(acceptDataHead) != "www.redocn.com"){
-			break
-		}
-		acceptDataDesc:=buffer[i+14:i+314]
-		Log("receive data desc:", string(acceptDataDesc))
 
+		if length < i + ConstHeaderLength + ConstDescLength + ConstSaveDataLength{
+			break
+		}
+
+		headerBufferStart := i
+		headerBufferEnd   := i + ConstHeaderLength
+		header :=buffer[headerBufferStart:headerBufferEnd]
+		if(string(header) != ConstHeader){
+			break
+		}
+
+		descBufferStart := headerBufferEnd
+		descBufferEnd   := descBufferStart + ConstDescLength
+		desc := buffer[descBufferStart:descBufferEnd]
+		Log("data desc:", string(desc))
+
+
+		saveDataLengthBufferStart := descBufferEnd
+		saveDataLengthBufferEnd   := saveDataLengthBufferStart + ConstSaveDataLength
 		var acceptDataLength uint32
-		buf := bytes.NewReader(buffer[i+314:i+318])
+		buf := bytes.NewReader(buffer[saveDataLengthBufferStart:saveDataLengthBufferEnd])
 		binary.Read(buf,binary.BigEndian,&acceptDataLength)
-		Log("receive data length:",acceptDataLength)
+		//Log("data length:",acceptDataLength)
 
-		if(length<318+acceptDataLength){
+		saveDataBufferStart := saveDataLengthBufferEnd
+		saveDataBufferEnd   := saveDataBufferStart + acceptDataLength
+		if saveDataBufferEnd  > length {
 			break
 		}else{
-			Log("receive data length:",string(buffer[i+318:i+318+acceptDataLength]))
+			Log("receive data:",string(buffer[saveDataBufferStart:saveDataBufferEnd]))
 			Log("===============end============================")
-			return  buffer[i+318+acceptDataLength:]
+			//i += saveDataBufferEnd - 1
+			i += ConstHeaderLength + ConstDescLength +  ConstSaveDataLength + acceptDataLength - 1
+			fmt.Println(i)
 		}
 	}
-	if i == length {
+	if i >= length {
 		return make([]byte, 0)
 	}
 	return buffer[i:]
 }
 
+
 func handleConnection(conn net.Conn) {
 	buffer := make([]byte, 1024)
-	//tmpBuffer := make([]byte,0)
-	//readerChannel := make(chan []byte, 1024)
+	tmpBuffer := make([]byte,0)
 	for {
 		n, err := conn.Read(buffer)
 		if err != nil {
 			Log(conn.RemoteAddr().String(), " connection error: ", err)
 			return
 		}
-		Log("receive data:",string(buffer[n:]))
-		//tmpBuffer = Unpack(append(tmpBuffer, buffer[:n]...))
+		tmpBuffer = Unpack(append(tmpBuffer, buffer[:n]...))
 	}
 }
 
-
- 
-	fmt.Println(v...)
-}
 
 func CheckError(err error) {
 	if err != nil {

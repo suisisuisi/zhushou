@@ -2,11 +2,12 @@
 #!/usr/local/bin/python3
 # 先做一个简单的不分片的文件上传
 import sys
-import ConfigParser
+
 import os
 import struct
 from crypt import crypt
 from sck import sck
+import ConfigParser
 
 class WFile:
     size = 0
@@ -46,10 +47,10 @@ class plupload:
 
     def __init__(self):
         self.init()
-        self.connectServer()
+        self.initSck()
 
 
-    def connectServer(self):
+    def initSck(self):
         self.sck = sck()
         self.sck.connect(self.cfg.get('Server','addr'),int(self.cfg.get('Server','port')))
 
@@ -84,18 +85,16 @@ class plupload:
                     fhead = ""
                     fhead += "filehash:"+wfile.hash+";"
                     fhead += "chunkhash:"+chunkhash+";"
-                    fhead += "size:" + str(int(wfile.atime)) + ";"
+                    fhead += "size:" + str(wfile.size) + ";"
                     fhead += "authorizeToken:" + wfile.hash + ";"
                     fhead += "name:"+wfile.name+";"
 
                     fhead = fhead.encode(encoding="utf-8")
-
-                    data = struct.pack('10s300s1I',
-                                        b'redocn',
-                                        fhead,
-                                        sendBufferLen)
-                    print (fh)
-
+                    data = struct.pack('!14s300s1I',
+                                       b'www.redocn.com',
+                                       fhead,
+                                       sendBufferLen)
+                    data += bytes
                     self.sck.send(data)
 
             wfile.state = WFile.DONE
